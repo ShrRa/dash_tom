@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
+from functools import partial  
 import panel as pn
 from bokeh.models import CDSView, ColumnDataSource, GroupFilter, HoverTool
 from bokeh.plotting import figure
@@ -9,7 +10,7 @@ from bokeh.plotting import figure
 from .state import LCSession
 from .schema import COL_BAND, COL_FLUX_PLOT, COL_ID, COL_TIME
 
-pn.extension("bokeh")
+pn.extension()
 
 _BAND_PALETTE = {
     "u": "#56B4E9",
@@ -131,9 +132,19 @@ class LCVizApp:
         )
         return p
 
-    def _refresh(self):
+    def _refresh(self, *, clear_selection: bool = False):
         dfv = self.session.data_view.sort_values(COL_TIME)
-        self.cds.data = _df_to_cds(dfv)
+        new_data = _df_to_cds(dfv)
+        doc = pn.state.curdoc
+
+        def _apply():
+            self.cds.data = new_data
+            if clear_selection:
+                self.cds.selected.indices = []
+
+        doc.add_next_tick_callback(_apply)
+
+
 
     def _selected_ids(self) -> list[int]:
         idxs = list(self.cds.selected.indices)
@@ -149,8 +160,7 @@ class LCVizApp:
             return
         self.session.toggle_active(ids, active=False)
         self.last_action = f"Deactivated {len(ids)} point(s)."
-        self._refresh()
-        self.cds.selected.indices = []
+        self._refresh(clear_selection=True)
         self._update_status()
 
     def _reactivate(self, _=None):
@@ -160,12 +170,11 @@ class LCVizApp:
             return
         self.session.toggle_active(ids, active=True)
         self.last_action = f"Reactivated {len(ids)} point(s)."
-        self._refresh()
-        self.cds.selected.indices = []
+        self._refresh(clear_selection=True)
         self._update_status()
 
     def _clear_selection(self, _=None):
-        self.cds.selected.indices = []
+        pn.state.curdoc.add_next_tick_callback(lambda: setattr(self.cds.selected, "indices", []))
 
     def _on_selection_change(self, attr, old, new):
         self._update_status()
