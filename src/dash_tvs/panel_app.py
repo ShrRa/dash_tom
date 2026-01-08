@@ -109,13 +109,6 @@ def make_app(session: LCSession) -> pn.Column:
     available_bands = sorted(df0[COL_BAND].unique().tolist()) if len(df0) else []
     default_bands = [b for b in available_bands if session.vis_bands.get(b, True)]
 
-    band_choice = pn.widgets.MultiChoice(
-        name="Bands",
-        options=available_bands,
-        value=default_bands,
-        solid=True,
-    )
-
     cds = ColumnDataSource(_df_to_cds(df0.sort_values(COL_TIME)))
     p = _make_figure(cds)
 
@@ -123,17 +116,8 @@ def make_app(session: LCSession) -> pn.Column:
         dfv = session.data_view.sort_values(COL_TIME)
         cds.data = _df_to_cds(dfv)
 
-    def _on_bands_change(event):
-        selected = set(event.new)
-        for b in available_bands:
-            session.set_band_visible(b, b in selected)
-        _refresh()
-
-    band_choice.param.watch(_on_bands_change, "value")
-
     layout = pn.Column(
         pn.pane.Bokeh(p, sizing_mode="stretch_width"),
-        band_choice,
         sizing_mode="stretch_width",
     )
     return layout
