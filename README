@@ -1,0 +1,5 @@
+Simple demo for panel+bokeh interactive visualization. 
+For standalone testing of the plotting (without Django), run panel serve demo_panel.py.
+
+For Django integration, execute 'daphne -p 8000 project.asgi:application', then open http://127.0.0.1:8000/lc/ in the browser.
+Requires an LSST-like timeseries file; the address can be set up in the lc_viz/views.py with LC_FILE variable.

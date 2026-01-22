@@ -4,7 +4,10 @@ from bokeh.embed import server_document
 from django.http import HttpRequest
 from django.shortcuts import render
 
-LC_FILE = '/home/alex/Data/Work/Sources/dash_dummy_data/lsst_RRLyr_with_diaSourceId.pkl'
+from pathlib import Path
+
+cwd = Path.cwd()
+LC_FILE = (cwd / '../demo_data/lsst_RRLyr_with_diaSourceId.pkl').resolve()
 
 # ---- Django view: regular page, embeds the app script ----
 
