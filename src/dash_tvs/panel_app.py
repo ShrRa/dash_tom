@@ -66,7 +66,7 @@ class LCVizApp:
 
 
         self.layout = pn.Column(
-            pn.pane.Bokeh(self.plot, sizing_mode="stretch_width"),
+            pn.pane.Bokeh(self.plot,sizing_mode="stretch_width"),
             pn.Row(self.btn_deactivate, self.btn_reactivate, self.btn_clear, sizing_mode="stretch_width"),
             self.status,
             sizing_mode="stretch_width",
@@ -75,7 +75,7 @@ class LCVizApp:
     def _make_figure(self, source: ColumnDataSource):
         p = figure(
             height=420,
-            sizing_mode="stretch_width",
+            max_width=800,
             tools="pan,wheel_zoom,box_zoom,box_select,lasso_select,tap,reset,save",
             active_scroll="wheel_zoom",
             x_axis_label="MJD",
@@ -123,8 +123,8 @@ class LCVizApp:
                 tooltips=[
                     ("diaSourceId", f"@{COL_ID}"),
                     ("band", f"@{COL_BAND}"),
-                    ("mjd", f"@{COL_TIME}{{0.000}}"),
-                    ("flux_plot", f"@{COL_FLUX_PLOT}{{0.000}}"),
+                    ("mjd", f"@{COL_TIME}{{%.2f}}"),
+                    ("flux_plot", f"@{COL_FLUX_PLOT}{{%.2f}}"),
                     ("active", "@active"),
                 ],
                 formatters={f"@{COL_TIME}": "printf", f"@{COL_FLUX_PLOT}": "printf"},

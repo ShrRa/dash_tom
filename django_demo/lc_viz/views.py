@@ -28,6 +28,8 @@ def lc_panel_app(doc):
 
     # TODO: replace with real data fetch (DB / API) later
     df = pd.read_pickle(LC_FILE)
+    oid = df['objectId'].unique()[2]
+    df =df[df['objectId']==oid].reset_index(drop=True)
     canon = from_lsst_pickle_df(df)
     sess = LCSession(canon)
 
