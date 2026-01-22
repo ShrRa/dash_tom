@@ -10,8 +10,12 @@ pn.extension("bokeh")
 
 lc_file = '/home/alex/Data/Work/Sources/dash_dummy_data/lsst_RRLyr_with_diaSourceId.pkl'
 
-df = pd.read_pickle(lc_file)  # <-- change this
-canon = from_lsst_pickle_df(df)  # will generate mock diaSourceId if missing
+df = pd.read_pickle(lc_file) 
+oid = df['diaSourceId'].unique()[0]
+print(len(df)) 
+df =df[df['diaSourceId']==oid]
+print(len(df))  # single source for demo
+canon = from_lsst_pickle_df(df)
 sess = LCSession(canon)
 
 app = make_app(sess)

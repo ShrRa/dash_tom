@@ -146,8 +146,6 @@ class LCSession:
             ],
             "vis_bands": {k: bool(v) for k, v in self.vis_bands.items()},
             "vis_sources": {k: bool(v) for k, v in self.vis_sources.items()},
-            # Added points are optional; for v1 keep them out unless needed.
-            # If you want them: serialize rows to list[dict].
         }
 
     def apply_snapshot(self, snap: Dict[str, Any]) -> None:
